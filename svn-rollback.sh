@@ -36,7 +36,7 @@ fi
 list_version=$(svn log $1 --limit 5)
 #要回退的前一个版本号
 rollback_version=$(svn log $1 --limit 2|tac |sed -n 4p|awk '{print $1}') 
-warn_echo "列出最近的几个版本号"
+warn_echo "列出需要回退的文件或目录的最近几个版本号"
 echo "$list_version"
 echo ""
 warn_echo "回退到上一个版本,请直接回车，回退到指定版本,输入如r1024。"
