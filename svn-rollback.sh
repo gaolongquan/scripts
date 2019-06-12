@@ -33,7 +33,7 @@ exit 0
 fi
 
 #列出最近的几个版本号
-list_version=$(svn log $1 --limit 5|sed '1d'|sed '$d'|awk -F '|' '{print $1}')
+list_version=$(svn log $1 --limit 5)
 #要回退的前一个版本号
 rollback_version=$(svn log $1 --limit 2|tac |sed -n 4p|awk '{print $1}') 
 warn_echo "列出最近的几个版本号"
