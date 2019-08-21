@@ -1,0 +1,28 @@
+#!/bin/sh
+
+#乱码
+export LANG=en_US.UTF-8
+#版本路径
+REPOS="$1"
+#版本号
+REV="$2"
+#提交者
+AUTHOR=$(svnlook author -r $REV $REPOS)
+#备注信息
+MESSAGE=$(svnlook log $REPOS -r $REV)
+#操作文件 A 新增 U 修改 D 删除
+CHANGEDLIST=$(svnlook changed -r $REV $REPOS) 
+#提交时间
+DATE=$(svnlook date -r $REV $REPOS)
+RN=`basename $REPOS`
+ 
+#自动更新
+svn update --non-interactive /data/web/domain.com --username  domain --password domain --no-auth-cache
+chown -R www.www /data/web/domain.com
+
+#svn改动使用钉钉通知
+
+api_url='https://oapi.dingtalk.com/robot/send?access_token=your-token'
+DING="curl -H \"Content-Type: application/json\" -X POST --data '{\"msgtype\": \"text\", \"text\": {\"content\":  \
+\"${RN}版本更新\n提交者  ${AUTHOR}\n提交时间  ${DATE}\n备注信息  ${MESSAGE}\n操作文件  \r${CHANGEDLIST} \n提交版本  ${REV}\"}, \"at\": {\"atMobiles\": [""], \"isAtAll\": false}}' ${api_url}"
+eval $DING >/dev/null 2>&1
